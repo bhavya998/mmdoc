@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[oc]
+*.egg-info/
+.venv/
+
+# Secrets
+.env
+.env.local
+
+# Data
+data/
+
+# Next.js
+ui/node_modules/
+ui/.next/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.idea/
+.vscode/
