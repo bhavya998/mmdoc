@@ -17,8 +17,8 @@ dependencies = [
     "python-dotenv>=1.2.2",
     "python-multipart>=0.0.32",
     "rich>=15.0.0",
-    "torch>=2.13.0",
-    "torchvision>=0.28.0",
+    "torch>=2.11.0",
+    "torchvision>=0.26.0",
     "transformers>=5.13.0",
     "typer>=0.26.8",
     "uvicorn[standard]>=0.51.0",
@@ -46,3 +46,12 @@ asyncio_mode = "auto"
 
 [tool.ruff]
 line-length = 100
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu128" }
+torchvision = { index = "pytorch-cu128" }
