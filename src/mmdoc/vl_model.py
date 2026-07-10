@@ -29,7 +29,7 @@ class VLModel:
         if self._model is not None:
             return
         import torch
-        from transformers import Qwen3VLForConditionalGeneration, AutoProcessor
+        from transformers import Qwen3_5ForConditionalGeneration, AutoProcessor
 
         has_cuda = torch.cuda.is_available()
         kwargs: dict[str, Any] = {"trust_remote_code": True, "device_map": "auto"}
@@ -53,7 +53,7 @@ class VLModel:
             kwargs["device_map"] = "cpu"
 
         self._processor = AutoProcessor.from_pretrained(self._model_id, trust_remote_code=True)
-        self._model = Qwen3VLForConditionalGeneration.from_pretrained(self._model_id, **kwargs)
+        self._model = Qwen3_5ForConditionalGeneration.from_pretrained(self._model_id, **kwargs)
         if not has_cuda:
             self._model.to("cpu")
         self._model.eval()
