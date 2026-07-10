@@ -112,3 +112,29 @@ mmdoc/
 ## License
 
 MIT
+
+---
+
+## Testing
+
+```bash
+# Run all tests (42 tests: unit + API + end-to-end)
+make test
+
+# Unit tests only (document parsing, VL model, extractor, API)
+make test-unit
+
+# End-to-end tests (live server + real file uploads)
+make test-e2e
+
+# Lint (Python + TypeScript)
+make lint
+```
+
+| Test Suite | What it covers |
+|---|---|
+| `test_document.py` | PDF/image/GIF loading, page extraction, error handling |
+| `test_vl_model.py` | Model init, query/describe/extract_json with mocked model |
+| `test_extractor.py` | Full extraction pipeline with mocked VL model |
+| `test_api.py` | FastAPI endpoints via TestClient (health, extract, describe, ask) |
+| `test_e2e.py` | Live Uvicorn server, real multipart uploads, CORS, error handling |
