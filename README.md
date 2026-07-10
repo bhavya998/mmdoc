@@ -1,14 +1,14 @@
 <div align="center">
 
-# 📄 mmdoc — Multi-modal Document Understanding
+# mmdoc — Multi-modal Document Understanding
 
-### Upload any document — get structured JSON, descriptions, and answers. Powered by Qwen3.5-VL. 100% local GPU.
+**Upload any document (PDF, image, screenshot) and get structured JSON, descriptions, and answers — all from a local 0.8B vision-language model. No API keys, no cloud, runs entirely on your GPU.**
 
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://python.org)
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?logo=next.js&logoColor=white)](https://nextjs.org)
+[![PyTorch](https://img.shields.io/badge/PyTorch-CUDA-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org)
+[![Tests](https://img.shields.io/badge/Tests-42%20passing-22c55e)]()
 [![License](https://img.shields.io/badge/License-MIT-22c55e)](LICENSE)
-
-**Zero API keys. Qwen3.5-0.8B runs on your machine.**
 
 </div>
 
@@ -34,12 +34,20 @@ Screenshot           →  "A login form with username and password fields"
 
 ## Quick Start
 
+### Prerequisites
+
+- **Python 3.12+** and [`uv`](https://docs.astral.sh/uv/) (package manager)
+- **NVIDIA GPU** with CUDA support (tested on RTX 3070 Ti, 8GB VRAM)
+- **Node.js 18+** for the frontend
+
+> CPU-only mode works but is ~50x slower (~400s/page vs ~7s/page on GPU).
+
 ```bash
 git clone https://github.com/bhavya998/mmdoc.git
 cd mmdoc
 
-# Backend
-uv sync
+# Backend (PyTorch CUDA + model deps)
+uv sync                         # installs torch with CUDA 12.8 automatically
 uv run mmdoc serve              # FastAPI on :8000
 
 # Frontend (separate terminal)
@@ -104,8 +112,11 @@ mmdoc/
 │   ├── extractor.py      Pipeline: extract / describe / ask / batch
 │   ├── api.py            FastAPI app (4 endpoints)
 │   └── cli.py            CLI (serve / extract / describe / ask / batch)
+├── tests/                42 tests (unit + API + live server E2E)
+├── scripts/              Real model E2E test scripts
 ├── ui/                   Next.js 16 UI (drag-drop upload + results)
-├── pyproject.toml
+├── Makefile              test, test-unit, test-e2e, lint, serve, dev
+├── pyproject.toml        Project config + CUDA torch index
 └── README.md
 ```
 
@@ -138,3 +149,15 @@ make lint
 | `test_extractor.py` | Full extraction pipeline with mocked VL model |
 | `test_api.py` | FastAPI endpoints via TestClient (health, extract, describe, ask) |
 | `test_e2e.py` | Live Uvicorn server, real multipart uploads, CORS, error handling |
+
+## Verified With Real Model
+
+Tested end-to-end on RTX 3070 Ti (8GB VRAM) with a real 2-page PDF (image invoice + digital text page):
+
+| Operation | Time | Result |
+|---|---|---|
+| Describe | 9s | Both pages captioned accurately |
+| Extract | 42s | All items, prices, GSTIN, bank details as JSON |
+| Ask | 13s | "Grand Total: 2100 INR" + "Payment Terms: Net 30" |
+
+Handles both scanned/image-based PDF pages (VL model reads the image) and digital-text PDF pages (text extracted via pymupdf).
